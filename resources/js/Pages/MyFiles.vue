@@ -29,7 +29,8 @@
             </ol>
 
         </nav>
-       <table class="min-w-full">
+        <div class="flex-1 overflow-auto">
+            <table class="min-w-full">
         <thead class="bg-gray-100 border-b">
             <tr>
                 <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
@@ -70,6 +71,8 @@
         
 
        </table>
+        </div>
+     
       
        <div v-if="!files.data.length" class="py-8 text-center text-sm text-gray-400">
         There is no data in this folder
@@ -83,6 +86,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { router , Link} from '@inertiajs/vue3';
 import {HomeIcon} from '@heroicons/vue/20/solid'
 import FileIcon from '@/Components/app/FileIcon.vue';
+import { onMounted } from 'vue';
 
 function openFolder(file) {
     if (!file.is_folder) {
@@ -96,6 +100,11 @@ const props = defineProps({
     folder: Object,
     ancestors: Object,
 })
-    
+
+// onMounted(() => {
+//     const observer = new IntersectionObserver(()=>,{
+//         rootMargin: '-250px'
+//     })
+// })
 
 </script>
