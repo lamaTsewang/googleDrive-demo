@@ -17,7 +17,7 @@ class FileController extends Controller
     public function myFiles(Request $request, string $folder = null)
     {
        
-      
+    //   echo phpinfo();
         if ($folder) {
             $folder = File::query()
                 ->where('created_by', Auth::id())
@@ -34,10 +34,14 @@ class FileController extends Controller
         ->where('created_by', Auth::id())
         ->orderBy('is_folder','desc')
         ->orderBy('created_at','desc')
-        ->paginate(50);
-        
+        ->paginate(10);
+         
         $files = FileResource::collection($files);
 
+
+        if ($request->wantsJson()) {
+            return $files;
+        }
 
         $ancestors = FileResource::collection([...$folder->ancestors, $folder]);
 
@@ -116,5 +120,31 @@ class FileController extends Controller
                 $parent->appendNode($model);
             }
         }
+    }
+
+    public function destory(DestoryFileRequest $request){
+
+        $data = $request->validated();
+
+        $parent = $request->parent;
+
+        if($data['all']) {
+
+            $children = $parent->childrean;
+
+            foreach ($children as $child) {
+                $child->delete();
+            }
+        }
+        else{
+            foreach($data ['ids'] ?? [] as $id){
+                $file = File::find($id);
+                $file->delete();
+            }
+        }
+
+        return to_route('myFiles', ['folder' => $parent->path]);
+
+        
     }
 }
