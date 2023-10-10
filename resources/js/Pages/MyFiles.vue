@@ -165,7 +165,7 @@ function loadMore(){
 
 function onDelete() {
     allSelected.value = false
-    selected.value = {}
+    selected.value = null
 }
 function onSelectedAllChange(){
    allFiles.value.data.forEach(f => {
