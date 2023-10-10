@@ -45,7 +45,7 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['ram'])
 
 function onDeleteClick(){
 
@@ -74,7 +74,7 @@ function onDeleteConfirm(){
     deleteFilesForm.delete(route('file.delete'),{
         onSuccess: ()=> {
             showDeleteDialog.value = false;
-            emit('delete');
+            emit('ram');
             // showSuccessDialog('Files deleted successfully');
         },
         })

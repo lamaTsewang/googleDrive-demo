@@ -30,9 +30,13 @@
                 </li>
             </ol>
 
-            <div class="">
+            
+                
+            
+            <div class="flex">
 
-                <DeleteFilesButton :delete-all="allSelected" :delete-ids="selectedIds" @delete="onDelete"/>
+                <DownloadFilesButton :all="allSelected" :ids="selectedIds" class="mr-2"/>
+                <DeleteFilesButton :delete-all="allSelected" :delete-ids="selectedIds" @ram="onDelete"/>
                
             </div>
 <!-- <pre>{{ selectedIds }}</pre> -->
@@ -115,7 +119,7 @@ import {httpGet} from "@/Helper/http-helper.js";
 import {all} from "axios";
 import Checkbox from '@/Components/Checkbox.vue';
 import DeleteFilesButton from '@/Components/app/DeleteFilesButton.vue';
-
+import DownloadFilesButton from '@/Components/app/DownloadFilesButton.vue';
 
 
 
@@ -165,7 +169,7 @@ function loadMore(){
 
 function onDelete() {
     allSelected.value = false
-    selected.value = null
+    selected.value = {}
 }
 function onSelectedAllChange(){
    allFiles.value.data.forEach(f => {
