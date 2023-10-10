@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class DestoryFileRequest extends ParentIDBaseRequest
 {
@@ -20,7 +22,7 @@ class DestoryFileRequest extends ParentIDBaseRequest
     {
         return array_merge(parent::rules(),[
             'all' => 'nullable|boolean',
-            'ids.*' => Rule::exists( 'files', 'id')->where(function($query) use ($user){
+            'ids.*' => Rule::exists( 'files', 'id')->where(function($query){
                 $query->where('created_by', Auth::id());
             })
         ]);

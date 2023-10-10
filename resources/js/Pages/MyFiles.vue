@@ -1,5 +1,7 @@
 <template>
     <AuthenticatedLayout>
+        <!-- <pre>{{ selected }}</pre>
+        <pre>{{ allSelected }}</pre> -->
         <nav class="flex items-center justify-between p-1 mb-3">
             <ol class="inline-flex items-center space-x-1 md:space-x-3">
                 <li v-for="ans of ancestors.data" :key="ans.id" class="inline-flex ietms-center">
@@ -28,6 +30,12 @@
                 </li>
             </ol>
 
+            <div class="">
+
+                <DeleteFilesButton :delete-all="allSelected" :delete-ids="selectedIds" @delete="onDelete"/>
+               
+            </div>
+<!-- <pre>{{ selectedIds }}</pre> -->
         </nav>
         <div class="flex-1 overflow-auto">
             <table class="min-w-full">
@@ -57,7 +65,7 @@
                     class=" border-b cursor-pointer transition duration-300 ease-in-out hover:bg-gray-100 cursor-pointer" :class="(selected[file.id] || allSelected) ? 'bg-blue-50' : 'bg-white'">
 
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-[30px] max-w-[30px] pr-0 ">
-                        <Checkbox v-model="selected[file.id]" :checked="selected[file.id] || allSelected"/>
+                        <Checkbox @change="$event => onSelectCheckboxChange(file)" v-model="selected[file.id]" :checked="selected[file.id] || allSelected"/>
                         </td> 
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 flex  items-center">
                         <FileIcon :file="file"/>
@@ -102,10 +110,12 @@ import {HomeIcon} from '@heroicons/vue/20/solid'
 import FileIcon from '@/Components/app/FileIcon.vue';
 import { onMounted } from 'vue';
 import { onUpdated } from 'vue';
-import { ref } from 'vue';
+import { ref , computed} from 'vue';
 import {httpGet} from "@/Helper/http-helper.js";
 import {all} from "axios";
 import Checkbox from '@/Components/Checkbox.vue';
+import DeleteFilesButton from '@/Components/app/DeleteFilesButton.vue';
+
 
 
 
@@ -117,6 +127,10 @@ const allFiles = ref({
     data: props.files.data,
     next: props.files.links.next
 })
+
+const selectedIds = computed(() => Object.entries(selected.value).filter( a => a[1]).map( a=> a[0]))
+
+
 
 function openFolder(file) {
     if (!file.is_folder) {
@@ -142,10 +156,17 @@ function loadMore(){
     httpGet(allFiles.value.next)
         .then(res => {
             allFiles.value.data = [...allFiles.value.data, ...res.data]
-            allFiles.value.next = res.links.next
-        })
+            allFiles.value.next = res.links.next;
+        
+        }) 
+        
 }
 
+
+function onDelete() {
+    allSelected.value = false
+    selected.value = {}
+}
 function onSelectedAllChange(){
    allFiles.value.data.forEach(f => {
     selected.value[f.id] = allSelected.value;
@@ -156,8 +177,20 @@ function toggleFileSelect(file){
    
 
     selected.value[file.id] = !selected.value[file.id];
-}
 
+    onSelectCheckboxChange(file);
+}
+function onSelectCheckboxChange(file){
+   
+   if(!selected.value[file.id]){
+       allSelected.value = false;
+   }
+   else{
+       allSelected.value = allFiles.value.data.every(f => selected.value[f.id]);
+     
+   }
+   
+}
 onUpdated(() => {
     allFiles.value = {
         data: props.files.data,

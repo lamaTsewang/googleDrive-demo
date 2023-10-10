@@ -8,6 +8,7 @@ use App\Http\Requests\StoreFolderRequest;
 use App\Http\Requests\StoreFileRequest;
 use App\Models\File;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\DestoryFileRequest;
 
 use App\Http\Resources\FileResource;
 
